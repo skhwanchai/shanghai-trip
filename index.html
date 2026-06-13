@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shanghai 7–14 Nov 2026 · Field Guide</title>
+<style>
+  /* ============ DESIGN TOKENS ============
+     "Old Shanghai" — Art-Deco colonial Bund meets the neon Pudong skyline. */
+  :root{
+    --ink:#16202e; --ink-soft:#22303f;
+    --paper:#f4ede0; --paper-deep:#e7dcc6;
+    --vermilion:#d6452c; --vermilion-deep:#b23420;
+    --brass:#c79a4b; --jade:#3f7d6e; --muted:#7d7363;
+    --line:rgba(22,32,46,.14);
+    --shadow:0 8px 28px rgba(22,32,46,.16);
+    --radius:4px; --maxw:880px;
+    --font-disp:"Bebas Neue","Anton","Oswald",sans-serif;
+    --font-body:"Noto Sans Thai","Sarabun",system-ui,sans-serif;
+    --font-serif:"Noto Serif Thai",Georgia,serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--ink);
+    line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:84px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+  /* ============ HEADER ============ */
+  .topbar{position:relative;background:var(--ink);color:var(--paper);overflow:hidden;border-bottom:3px solid var(--vermilion)}
+  .topbar::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(199,154,75,.05) 38px 40px);pointer-events:none}
+  .topbar-inner{max-width:var(--maxw);margin:0 auto;padding:30px 22px 26px;position:relative}
+  .kicker{font-family:var(--font-disp);letter-spacing:.32em;font-size:14px;color:var(--brass);
+    text-transform:uppercase;display:flex;align-items:center;gap:10px}
+  .kicker::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--brass),transparent)}
+  h1.title{font-family:var(--font-disp);font-size:clamp(46px,13vw,82px);line-height:.92;
+    letter-spacing:.02em;margin:6px 0 4px;color:var(--paper)}
+  h1.title .zh{color:var(--vermilion)}
+  .slogan{font-family:var(--font-serif);font-style:italic;font-size:clamp(15px,4vw,19px);
+    color:var(--brass);margin:4px 0 12px;letter-spacing:.01em}
+  .subtitle{font-size:13.5px;color:rgba(244,237,224,.72);font-weight:300;display:flex;flex-wrap:wrap;gap:6px 16px}
+  .subtitle b{color:var(--brass);font-weight:600}
+
+  /* ============ TAB NAV ============ */
+  .tabs{position:fixed;bottom:0;left:0;right:0;z-index:1200;background:var(--ink);
+    border-top:1px solid rgba(199,154,75,.3);display:flex;box-shadow:0 -4px 20px rgba(0,0,0,.25)}
+  .tab{flex:1;background:none;border:none;cursor:pointer;padding:10px 4px 12px;color:rgba(244,237,224,.55);
+    display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--font-body);transition:color .2s;position:relative}
+  .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .tab .tlab{font-size:10.5px;letter-spacing:.04em;font-weight:500}
+  .tab[aria-selected="true"]{color:var(--brass)}
+  .tab[aria-selected="true"]::before{content:"";position:absolute;top:0;width:34px;height:3px;
+    background:var(--vermilion);border-radius:0 0 3px 3px}
+
+  /* ============ LAYOUT ============ */
+  main{max-width:var(--maxw);margin:0 auto;padding:22px 18px 40px}
+  .panel{display:none;animation:fade .35s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ============ DAY CHIPS ============ */
+  .daystrip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;margin:0 -4px 8px;-webkit-overflow-scrolling:touch}
+  .daystrip::-webkit-scrollbar{height:0}
+  .daychip{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);border-radius:var(--radius);
+    padding:7px 12px;cursor:pointer;text-align:center;min-width:60px;transition:.18s;font-family:var(--font-body)}
+  .daychip .dlab{font-family:var(--font-disp);font-size:13px;letter-spacing:.08em;color:var(--vermilion);line-height:1}
+  .daychip .dnum{font-family:var(--font-disp);font-size:22px;line-height:1.05;color:var(--ink)}
+  .daychip .ddow{font-size:10px;color:var(--muted);letter-spacing:.04em}
+  .daychip[aria-selected="true"]{background:var(--ink);border-color:var(--ink)}
+  .daychip[aria-selected="true"] .dnum{color:var(--paper)}
+  .daychip[aria-selected="true"] .ddow{color:var(--brass)}
+  .daychip[aria-selected="true"] .dlab{color:var(--brass)}
+
+  /* ============ DAY HEADER ============ */
+  .dayhead{border-left:4px solid var(--vermilion);padding:2px 0 2px 14px;margin:6px 0 16px}
+  .dayhead .deyebrow{font-family:var(--font-disp);letter-spacing:.2em;font-size:13px;color:var(--vermilion)}
+  .dayhead h2{font-family:var(--font-serif);font-size:25px;line-height:1.2;margin:2px 0 6px;font-weight:600}
+  .dayhead .dzone{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+  .dayhead .dzone svg{width:14px;height:14px;stroke:var(--jade);fill:none;stroke-width:1.6}
+  .dayhead .dnote{font-size:13.5px;color:var(--ink-soft);margin-top:8px;background:var(--paper-deep);
+    padding:9px 12px;border-radius:var(--radius);border-left:3px solid var(--brass)}
+
+  /* ============ MAP ============ */
+  .mapwrap{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+    box-shadow:var(--shadow);margin-bottom:18px}
+  .daymap{display:block;width:100%;height:auto;background:#eee6d4}
+  .daymap text{font-family:var(--font-body)}
+  .maproute{position:absolute;top:10px;right:10px;z-index:10;background:var(--ink);color:var(--paper);
+    text-decoration:none;font-family:var(--font-disp);letter-spacing:.1em;font-size:13px;
+    padding:8px 13px;border-radius:var(--radius);display:inline-flex;align-items:center;gap:7px;box-shadow:var(--shadow)}
+  .maproute svg{width:15px;height:15px;stroke:var(--brass);fill:none;stroke-width:1.8}
+  .maplegend{position:absolute;left:10px;bottom:10px;z-index:10;background:rgba(255,255,255,.92);
+    border:1px solid var(--line);border-radius:var(--radius);padding:5px 9px;font-size:11px;color:var(--muted);
+    display:flex;gap:11px;align-items:center}
+  .maplegend i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+  .maplegend .sight{background:var(--vermilion)}
+  .maplegend .food{background:var(--jade)}
+
+  /* ============ TIMELINE CARD ============ */
+  .stop{position:relative;padding-left:30px;margin-bottom:4px}
+  .stop::before{content:"";position:absolute;left:9px;top:6px;bottom:-4px;width:2px;background:var(--line)}
+  .stop:last-child::before{display:none}
+  .stop .dot{position:absolute;left:1px;top:8px;width:20px;height:20px;border-radius:50%;
+    background:var(--vermilion);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-disp);font-size:12px;z-index:1;border:2px solid var(--paper)}
+  .stop.food .dot{background:var(--jade)}
+  .stop.plain .dot{background:var(--brass)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px 15px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .card .time{font-family:var(--font-disp);font-size:17px;letter-spacing:.06em;color:var(--vermilion)}
+  .card.food .time{color:var(--jade)}
+  .card h3{font-size:16.5px;font-weight:600;margin:1px 0 2px;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+  .card h3 .en{font-size:12px;color:var(--muted);font-weight:400}
+  .tagrow{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}
+  .tag{font-size:11px;padding:2px 8px;border-radius:20px;letter-spacing:.02em;font-weight:500}
+  .tag.t-sight{background:#e8eef0;color:#345}
+  .tag.t-food{background:#e3efe9;color:#2c5a4e}
+  .tag.t-halal{background:#3f7d6e;color:#fff}
+  .tag.t-shop{background:#f3e7d6;color:#8a6420}
+  .tag.t-must{background:var(--vermilion);color:#fff}
+  .tag.t-opt{background:#f6efe0;color:#9a7a35;border:1px dashed var(--brass)}
+  .tag.t-activity{background:#eae6f0;color:#544a6a}
+  .card p.desc{font-size:13.5px;color:var(--ink-soft);margin:4px 0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:9px;padding-top:9px;border-top:1px dotted var(--line);font-size:12.5px}
+  .meta .mi{display:flex;align-items:center;gap:5px;color:var(--muted)}
+  .meta .mi svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+  .meta .mi b{color:var(--ink);font-weight:600}
+  .price{color:var(--vermilion-deep);font-weight:600}
+  .card .maplink{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12.5px;
+    color:var(--jade);text-decoration:none;font-weight:600;border-bottom:1px dotted var(--jade);padding-bottom:1px}
+  .card .maplink svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6}
+
+  .optgroup{margin:2px 0 18px 30px;border-left:2px dashed var(--brass);padding:2px 0 2px 14px}
+  .optgroup .ogt{font-family:var(--font-disp);letter-spacing:.14em;font-size:12px;color:var(--brass);margin-bottom:8px}
+  .optitem{font-size:13px;margin-bottom:8px;color:var(--ink-soft)}
+  .optitem b{color:var(--ink)}
+
+  /* ============ ALL ITEMS ============ */
+  .panel-intro{font-family:var(--font-serif);font-size:15px;color:var(--ink-soft);margin-bottom:14px}
+  .filterbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;position:sticky;top:0;
+    background:var(--paper);padding:10px 0;z-index:5;border-bottom:1px solid var(--line)}
+  .fbtn{border:1px solid var(--line);background:#fff;cursor:pointer;border-radius:20px;padding:6px 13px;
+    font-size:12.5px;font-family:var(--font-body);color:var(--ink-soft);transition:.16s;font-weight:500}
+  .fbtn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .fbtn .ct{opacity:.6;margin-left:5px;font-size:11px}
+  .listitem{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;
+    margin-bottom:10px;box-shadow:0 2px 8px rgba(22,32,46,.06)}
+  .listitem .li-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .listitem h4{font-size:15px;font-weight:600}
+  .listitem h4 .en{font-size:11.5px;color:var(--muted);font-weight:400;display:block;margin-top:1px}
+  .listitem .li-day{font-family:var(--font-disp);font-size:13px;color:var(--vermilion);letter-spacing:.05em;white-space:nowrap}
+  .listitem p{font-size:13px;color:var(--ink-soft);margin:6px 0 0}
+  .listitem .li-meta{font-size:12px;color:var(--muted);margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+  .listitem .li-meta .price{font-weight:600}
+  .listitem .li-meta a.maplink{display:inline-flex;align-items:center;gap:4px;color:var(--jade);
+    text-decoration:none;font-weight:600;border:1px solid var(--jade);border-radius:20px;padding:3px 9px}
+  .listitem .li-meta a.maplink svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.7}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-family:var(--font-serif)}
+
+  /* ============ CONTACTS ============ */
+  .csec{margin-bottom:26px}
+  .csec h3{font-family:var(--font-disp);letter-spacing:.16em;font-size:18px;color:var(--ink);
+    border-bottom:2px solid var(--vermilion);padding-bottom:6px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .csec h3 svg{width:18px;height:18px;stroke:var(--vermilion);fill:none;stroke-width:1.6}
+  .crow{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:9px}
+  .crow .cname{font-weight:600;font-size:14.5px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .crow .cval{font-size:13px;color:var(--jade);font-weight:600;word-break:break-all}
+  .crow a.cval{color:var(--jade);text-decoration:none;border-bottom:1px dotted var(--jade)}
+  .crow p{font-size:12.5px;color:var(--ink-soft);margin-top:5px}
+  .emerg{background:var(--vermilion);color:#fff;border:none}
+  .emerg .cname,.emerg .cval{color:#fff}
+  .emerg p{color:rgba(255,255,255,.85)}
+  .phrasetable{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .phrasetable td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  .phrasetable tr:last-child td{border-bottom:none}
+  .phrasetable td:first-child{font-weight:600;width:42%}
+  .phrasetable td:last-child{color:var(--jade);font-weight:600}
+
+  footer{text-align:center;font-size:11.5px;color:var(--muted);padding:24px 16px 8px;font-family:var(--font-serif)}
+  footer .seal{display:inline-block;border:2px solid var(--vermilion);color:var(--vermilion);
+    font-family:var(--font-disp);letter-spacing:.1em;padding:3px 9px;border-radius:3px;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="kicker">Shanghai Field Guide · 上海</div>
+    <h1 class="title">SHANG<span class="zh">海</span>I<br>7—14 NOV</h1>
+    <div class="slogan">Where the old Bund glows and the new skyline never sleeps.</div>
+    <div class="subtitle">
+      <span><b>8</b> days · 7 nights</span>
+      <span>City <b>Day 1–5</b> · Disney <b>Day 5–7</b></span>
+      <span>Art &amp; galleries · Metro-first</span>
+      <span>Halal-friendly 清真</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="panel active" id="panel-days" role="tabpanel">
+    <div class="daystrip" id="daystrip"></div>
+    <div id="dayContent"></div>
+  </section>
+
+  <section class="panel" id="panel-all" role="tabpanel">
+    <p class="panel-intro">ทุกสถานที่ ร้านอาหาร ของห้ามพลาด ช้อปปิ้ง และกิจกรรม — กรองดูได้ และกดเปิดแผนที่แต่ละจุด</p>
+    <div class="filterbar" id="filterbar"></div>
+    <div id="allList"></div>
+  </section>
+
+  <section class="panel" id="panel-info" role="tabpanel">
+    <div id="infoContent"></div>
+  </section>
+</main>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-panel="panel-days">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+    <span class="tlab">แผนรายวัน</span>
+  </button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="panel-all">
+    <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+    <span class="tlab">รายการทั้งหมด</span>
+  </button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="panel-info">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <span class="tlab">ติดต่อ/เว็บ</span>
+  </button>
+</nav>
+
+<footer>
+  <div class="seal">游 上海</div><br>
+  คู่มือทริปส่วนตัว · 7–14 พ.ย. 2026 · ราคาเป็นค่าประมาณ (CNY) · ตรวจเวลาเปิด-ปิดอีกครั้งก่อนไป
+</footer>
+
+<script>
+/* =========================================================
+   DATA — calendar fixed: Sat 7 Nov 2026 = Day 1 (fly out)
+   lat/lng included so we can draw routes + Maps links.
+   ========================================================= */
+const DAYS = [
+  {
+    n:1, date:7, dow:"ส. 7", eyebrow:"DAY 01 · SAT 7 NOV", title:"บินจากกรุงเทพ → ถึงเซี่ยงไฮ้",
+    zone:"BKK → Pudong → เข้าเมือง",
+    note:"TG662 ออก 01:10 ถึง Pudong (PVG) 06:25 เช้าตรู่ · เข้าเมืองเก็บกระเป๋า พักเอาแรง เริ่มเที่ยวเบาๆ ตอนบ่าย",
+    stops:[
+      {type:"activity",time:"06:25",name:"ถึง Pudong Airport (PVG) T2",
+       desc:"ผ่าน ตม. → ซื้อซิม/เปิด VPN ที่เปิดไว้แล้ว → เข้าเมืองด้วย Metro สาย 2 หรือ Maglev เก็บกระเป๋าที่โรงแรม",
+       transit:"Metro สาย 2 / Maglev",price:"Metro ~7 · Maglev ~50",lat:31.1517,lng:121.8050},
+      {type:"sight",time:"บ่าย",name:"The Bund (เริ่มเบาๆ)",en:"外滩",
+       desc:"วันแรกเอาชิลล์ เดินเลียบแม่น้ำหวงผู่ ดูตึกโคโลเนียล รอไฟเปิดหัวค่ำ วิวสกายไลน์ Pudong เปิดทริปแบบจัดเต็ม",
+       transit:"Metro สาย 2/10 Nanjing E. Rd",price:"ฟรี",lat:31.240261,lng:121.490577},
+      {type:"halal",time:"มื้อค่ำ",name:"Muslim Jincheng Miandian",en:"清真 halal · ⭐4.1",
+       desc:"ร้านฮาลาลใกล้ The Bund/Nanjing E. Rd ราคาดี เด่นก๋วยเตี๋ยว ที่นั่งจำกัด เหมาะมื้อแรกง่ายๆ",
+       transit:"เดินจาก The Bund",price:"~25–45/คน",lat:31.243338,lng:121.486053},
+    ],
+    optional:[
+      {name:"พักเต็มที่",desc:"ถ้าเหนื่อยจากไฟลท์เช้า ข้ามมื้อค่ำนอกบ้านไปพักโรงแรมเลย เก็บแรงไว้ลุยอาร์ตพรุ่งนี้"},
+    ]
+  },
+  {
+    n:2, date:8, dow:"อา. 8", eyebrow:"DAY 02 · SUN 8 NOV", title:"West Bund · ริมแม่น้ำสายอาร์ต",
+    zone:"Xuhui · West Bund Art Corridor",
+    note:"ย่านพิพิธภัณฑ์ริมน้ำหวงผู่ เดินเลียบแม่น้ำต่อกันได้สบาย เน้นแกลเลอรี/ศิลปะร่วมสมัยเต็มวัน",
+    stops:[
+      {type:"must",time:"10:30",name:"Long Museum",en:"龙美术馆 West Bund",
+       desc:"พิพิธภัณฑ์ศิลปะร่วมสมัยในอาคารโรงถ่านเก่า โครงสร้างตัว T เปลือยปูน งานศิลป์จีนร่วมสมัยชั้นนำ",
+       transit:"Metro สาย 11 Yunjin Rd",price:"~100–150",hours:"ราว 10:00–17:30",lat:31.183927,lng:121.464324},
+      {type:"sight",time:"13:30",name:"West Bund Museum",en:"西岸美术馆",
+       desc:"ร่วมกับ Centre Pompidou ฝรั่งเศส หมุนเวียนงานมาสเตอร์พีซ วิวริมน้ำสวย เผื่อ 1.5 ชม.",
+       transit:"เดินเลียบน้ำ ~15 นาที",price:"~60–150",lat:31.171016,lng:121.462835},
+      {type:"halal",time:"มื้อกลางวัน",name:"Lanzhou Beef Noodles (Shaanxi S. Rd)",en:"清真 halal · ⭐4.8",
+       desc:"ก๋วยเตี๋ยวเนื้อหลานโจวเส้นดึงมือ ฮาลาลแท้ รสใกล้ปากคนไทยมาก อยู่ทางย่านฝรั่งเศสใกล้ๆ",
+       transit:"Metro/แท็กซี่สั้นๆ",price:"~25–45/คน",lat:31.206749,lng:121.461869},
+    ],
+    optional:[
+      {name:"Yuz Museum",desc:"พิพิธภัณฑ์ศิลปะร่วมสมัยอีกแห่งในโซนเดียวกัน เดินถึง ถ้ายังมีแรงดู installation"},
+      {name:"West Bund Promenade",desc:"ทางเดินเลียบแม่น้ำยาว มีคาเฟ่ สเก็ตพาร์ค จุดถ่ายรูปพระอาทิตย์ตก"},
+    ]
+  },
+  {
+    n:3, date:9, dow:"จ. 9", eyebrow:"DAY 03 · MON 9 NOV", title:"ย่านฝรั่งเศส + Jing'an",
+    zone:"Xuhui & Jing'an · French Concession",
+    note:"จันทร์มาที่นี่ฉลาดสุด — ทั้งย่านเปิดทุกวัน (พิพิธภัณฑ์/สวนหลายแห่งปิดจันทร์) เดินชิลล์ใต้ต้นเพลน",
+    stops:[
+      {type:"sight",time:"10:30",name:"Tianzifang",en:"田子坊",
+       desc:"ตรอกซอกซอยชิโคะเมิน ร้านงานคราฟต์ แกลเลอรีเล็ก คาเฟ่ มาเช้าคนยังน้อย เดินสนุก",
+       transit:"Metro สาย 9 Dapuqiao",price:"เข้าฟรี",hours:"เปิด 24 ชม.",lat:31.208812,lng:121.468898},
+      {type:"sight",time:"12:30",name:"Wukang Mansion",en:"武康大楼",
+       desc:"ตึกทรงหัวเรือโดย László Hudec ไอคอนสถาปัตย์ฝรั่งเศส จุดถ่ายรูปดังสุดของย่าน",
+       transit:"Metro สาย 10/11 Shanghai Library",price:"ชมภายนอกฟรี",lat:31.20448,lng:121.438326},
+      {type:"halal",time:"มื้อกลางวัน",name:"Sapar Uyghur Restaurant",en:"清真 halal · ⭐4.7",
+       desc:"ร้านซินเจียงที่แนะนำสุดสำหรับมื้อกลุ่ม! ข้าวอบ pilaf นานย่าง ไม้ย่างเนื้อแกะ สั่งหลายอย่างแชร์กัน",
+       transit:"Jing'an ใกล้ Anfu Rd",price:"~70–120/คน",lat:31.222777,lng:121.442472},
+      {type:"shop",time:"บ่าย",name:"Anfu Road",en:"安福路",
+       desc:"ถนนชิคที่สุดของย่านฝรั่งเศส คาเฟ่ specialty ร้าน select shop ดีไซน์ เดินช้อปได้ทั้งบ่าย",
+       transit:"เดินจาก Wukang",price:"กาแฟ ~30–55",lat:31.21415,lng:121.44436},
+    ],
+    optional:[
+      {name:"Eli Falafel",desc:"อาหารอาหรับ/ตะวันออกกลาง ฮาลาล อยู่ย่านเดียวกัน เผื่อเพื่อนอยากเปลี่ยนแนว"},
+      {name:"Ferguson Lane",desc:"คอร์ตยาร์ดคาเฟ่/ร้านอาหารบรรยากาศยุโรป ถ่ายรูปสวย"},
+    ]
+  },
+  {
+    n:4, date:10, dow:"อ. 10", eyebrow:"DAY 04 · TUE 10 NOV", title:"PSA + M50 + เมืองเก่า",
+    zone:"Huangpu & Putuo · Industrial Art",
+    note:"วันอาร์ตวันสุดท้ายก่อนเข้าดิสนีย์ — PSA ปิดจันทร์ จัดมาวันอังคารปลอดภัย ปิดท้ายเมืองเก่า/The Bund",
+    stops:[
+      {type:"must",time:"11:00",name:"Power Station of Art (PSA)",en:"上海当代艺术博物馆",
+       desc:"พิพิธภัณฑ์ศิลปะร่วมสมัยรัฐใหญ่สุด ในโรงไฟฟ้าเก่าริมน้ำ ปล่องสูงเป็นแลนด์มาร์ก มีรูฟท็อปวิวเมือง",
+       transit:"Metro สาย 4/8 Xizang S. Rd",price:"งานถาวรฟรี · พิเศษ ~50–80",hours:"อ.–อา. 11:00–19:00 · ปิดจันทร์",lat:31.201028,lng:121.498316},
+      {type:"sight",time:"14:30",name:"M50 Creative Park",en:"M50 创意园",
+       desc:"ย่านแกลเลอรีในโกดังเก่า สตรีทอาร์ต สตูดิโอศิลปิน คาเฟ่ เดิน 2–3 ชม. แนะนำ Island 6 + Pearlota",
+       transit:"Metro สาย 13 Jiangning Rd",price:"เข้าฟรี",hours:"แกลเลอรีส่วนใหญ่เปิด 11:00",lat:31.247683,lng:121.44875},
+      {type:"halal",time:"มื้อกลางวัน",name:"Qingmeiju Muslim Restaurant",en:"清真 halal · ⭐4.8",
+       desc:"อยู่ People's Square ระหว่างทาง เด็ดก๋วยเตี๋ยวเนื้อหลานโจว+เกี๊ยวเนื้อ พอร์ชั่นใหญ่ มีเมนูอังกฤษ+รูป",
+       transit:"Metro People's Square",price:"~30–50/คน",lat:31.233617,lng:121.470021},
+    ],
+    optional:[
+      {name:"Yu Garden + City God Temple",desc:"ถ้ายังไม่ได้ไป แวะสวนยู่หยวน (ปิดจันทร์ แต่วันนี้อังคารเปิด) + ตลาดเก่า เดินกินสตรีตฟู้ด"},
+      {name:"Rockbund Art Museum",desc:"พิพิธภัณฑ์ศิลปะในตึกอาร์ตเดโคหลัง The Bund ถ้าอยากดูงานเพิ่ม"},
+    ]
+  },
+  {
+    n:5, date:11, dow:"พ. 11", eyebrow:"DAY 05 · WED 11 NOV", title:"เข้าดิสนีย์ + เช็คอินโรงแรม",
+    zone:"Pudong · Disney Resort",
+    note:"เช้าเก็บของย้ายมาดิสนีย์ ขึ้น Metro สาย 11 สุดสาย เช็คอินโรงแรมรีสอร์ต (พัก 2 คืน) บ่าย-เย็นเดิน Disneytown ดูปราสาทไฟ พรุ่งนี้ลุยสวนเต็มวัน",
+    stops:[
+      {type:"activity",time:"เช้า",name:"ย้ายเข้าโรงแรมดิสนีย์",
+       desc:"เช็คเอาท์โรงแรมในเมือง ขึ้น Metro สาย 11 ลงสุดสาย Disney Resort → shuttle ไปโรงแรม เก็บกระเป๋า",
+       transit:"Metro สาย 11 Disney Resort",price:"รถไฟ ~7",lat:31.142288,lng:121.666809},
+      {type:"shop",time:"บ่าย",name:"Disneytown (Disney Springs)",en:"迪士尼小镇",
+       desc:"เขตช้อป-กินหน้าสวน เข้าฟรีไม่ต้องมีตั๋ว ร้านอาหารนานาชาติ แบรนด์ดัง เดินรอบ Wishing Star Lake เห็นปราสาทไกลๆ",
+       transit:"เดินจากโรงแรม",price:"ฟรี (จ่ายตามซื้อ)",lat:31.140959,lng:121.66189},
+      {type:"activity",time:"เย็น",name:"พักผ่อนในรีสอร์ต",
+       desc:"เก็บแรงในโรงแรม สระว่ายน้ำ/สวน บรรยากาศดิสนีย์ ก่อนวันลุยสวนสนุกเต็มวันพรุ่งนี้",
+       price:"—",lat:31.142288,lng:121.666809},
+    ],
+    optional:[
+      {name:"Yioulai Outlet",desc:"เอาท์เล็ตใกล้ดิสนีย์ บรรยากาศยุโรป มีร้านอาหาร tax rebate นักท่องเที่ยว ถ้าอยากช้อป"},
+      {name:"ซื้อตั๋วสวน + Premier Access",desc:"จองล่วงหน้าผ่านแอป Shanghai Disney Resort สำหรับพรุ่งนี้ ตัดคิว TRON/Pirates"},
+    ]
+  },
+  {
+    n:6, date:12, dow:"พฤ. 12", eyebrow:"DAY 06 · THU 12 NOV", title:"Shanghai Disneyland เต็มวัน",
+    zone:"Pudong · Disneyland Park",
+    note:"วันลุยสวนเต็มสูบ! เข้าก่อนเปิด 30 นาที พุ่ง TRON ก่อนเลย (คิวบ่ายขึ้นถึง 2 ชม.) วันธรรมดาคนน้อยกว่าเสาร์-อาทิตย์",
+    stops:[
+      {type:"must",time:"8:00",name:"เข้าสวน · พุ่ง TRON Lightcycle",en:"exclusive ride",
+       desc:"เครื่องเล่นเรือธงมีเฉพาะเซี่ยงไฮ้ มอเตอร์ไซค์ความเร็วสูง immersive สุดๆ — เล่นเป็นอันแรกตอนคิวสั้น",
+       transit:"เดินจากโรงแรม / shuttle",price:"ตั๋วสวน ~475–719",lat:31.143397,lng:121.657871},
+      {type:"must",time:"สาย",name:"Pirates of the Caribbean",en:"Treasure Cove",
+       desc:"โซนโจรสลัดที่รีวิวทั่วโลกยกให้เวอร์ชันดีที่สุด เอฟเฟกต์น้ำ+จอยักษ์ ห้ามพลาด",
+       price:"รวมในตั๋ว",lat:31.143397,lng:121.657871},
+      {type:"activity",time:"บ่าย",name:"Zootopia Land + เครื่องเล่นอื่น",
+       desc:"โซน Zootopia เปิดใหม่เฉพาะเซี่ยงไฮ้ + Soaring/Seven Dwarfs ตามคิว",
+       price:"รวมในตั๋ว",lat:31.143397,lng:121.657871},
+      {type:"must",time:"ค่ำ",name:"โชว์ปราสาทกลางคืน",en:"castle show",
+       desc:"โชว์แสง-ดอกไม้ไฟที่ปราสาท Enchanted Storybook ปิดท้ายวันจัดเต็ม จองจุดยืนล่วงหน้า",
+       price:"รวมในตั๋ว",lat:31.143397,lng:121.657871},
+    ],
+    optional:[
+      {name:"ถ้าเล่นครบเร็ว",desc:"วันธรรมดาคนน้อย อาจเล่นครบก่อน 1 ทุ่ม เดินถ่ายรูป Gardens of Imagination เพิ่ม"},
+      {name:"ของกินในสวน",desc:"เพื่อนมุสลิม: เลือกซีฟู้ด/ไก่/ผัก แจ้งเรื่องหมู เตรียมของแห้งสำรอง"},
+    ]
+  },
+  {
+    n:7, date:13, dow:"ศ. 13", eyebrow:"DAY 07 · FRI 13 NOV", title:"เที่ยวรอบดิสนีย์ → ย้ายไปสนามบิน",
+    zone:"Disney → Pudong Airport",
+    note:"เช็คเอาท์โรงแรมดิสนีย์เช้า ฝากกระเป๋า เที่ยวเบาๆ รอบโซน Pudong ตะวันออก แล้วย้ายไปนอนโรงแรมใกล้สนามบินคืนนี้ เพื่อบินสบายๆ พรุ่งนี้",
+    stops:[
+      {type:"activity",time:"เช้า",name:"เช็คเอาท์ดิสนีย์ + ฝากกระเป๋า",
+       desc:"เก็บของออกจากโรงแรมรีสอร์ต ฝากกระเป๋า เที่ยวเบาๆ ก่อนย้ายไปโซนสนามบิน",
+       transit:"shuttle / Metro สาย 11",price:"—",lat:31.142288,lng:121.666809},
+      {type:"activity",time:"สาย–บ่าย",name:"Shanghai Wild Animal Park",en:"上海野生动物园 (ทางเลือกเด็ด)",
+       desc:"สวนสัตว์เปิดขนาดใหญ่ใน Pudong มีแพนด้า เรดแพนด้า ให้อาหารคาปิบารา รีวิวบอกชิลล์กว่าดิสนีย์ เหมาะวันพักเบรก",
+       transit:"แท็กซี่/DiDi จากดิสนีย์ ~25 นาที",price:"~130 · แพ็กเกจรถไฟฟ้า ~600",lat:31.054766,lng:121.72433},
+      {type:"shop",time:"บ่าย",name:"Florentia Village Outlet",en:"佛罗伦萨小镇 (ทางเลือก)",
+       desc:"เอาท์เล็ตสไตล์อิตาเลียนใหญ่ใกล้สนามบิน แบรนด์เนนลด 60–80% มีรถ shuttle ฟรีไปสนามบิน ฝากกระเป๋าฟรี",
+       transit:"Metro สาย 2 Yuandong Ave",price:"ตามซื้อ",lat:31.19479,lng:121.76432},
+      {type:"activity",time:"เย็น",name:"เช็คอินโรงแรมใกล้สนามบิน",
+       desc:"นอนโรงแรมติดสนามบิน Pudong (เช่น Holiday Inn PVG ⭐4.6 เดินจาก T1/T2 ได้) คืนสุดท้าย พักสบายก่อนบินเช้า",
+       transit:"เดินเข้าสนามบินได้",price:"~600–900/คืน",lat:31.14681,lng:121.80671},
+    ],
+    optional:[
+      {name:"Yioulai Outlet",desc:"เอาท์เล็ตอีกแห่งติดดิสนีย์เลย ถ้าไม่อยากไปไกล มีร้านอาหาร tax rebate"},
+      {name:"พักผ่อนยาวๆ",desc:"ถ้าเล่นดิสนีย์หนักเมื่อวาน วันนี้พักในโรงแรมสนามบิน เก็บแรงบินกลับก็ได้"},
+    ]
+  },
+  {
+    n:8, date:14, dow:"ส. 14", eyebrow:"DAY 08 · SAT 14 NOV", title:"เดินทางกลับกรุงเทพ",
+    zone:"Pudong Airport → BKK",
+    note:"TG665 ออก 17:20 ถึงกรุงเทพ 21:15 · เช้า-บ่ายว่าง เก็บของฝากที่เอาท์เล็ต/สนามบิน เผื่อเวลาเช็คอินก่อนบิน",
+    stops:[
+      {type:"shop",time:"เช้า–บ่าย",name:"ช้อปของฝากปิดทริป",
+       desc:"จากโรงแรมสนามบินแวะ Florentia Village (มี shuttle) หรือช้อป duty-free ในสนามบิน เก็บชา/ขนม/ของฝากที่ตกหล่น",
+       transit:"shuttle ฟรี / เดิน",price:"ตามซื้อ",lat:31.19479,lng:121.76432},
+      {type:"activity",time:"15:00",name:"เช็คอิน TG665 · PVG T2",
+       desc:"กลับมาสนามบิน เช็คอิน เผื่อเวลา 2 ชม. ก่อนออก 17:20 (ถึงกรุงเทพ 21:15)",
+       transit:"เดิน/shuttle เข้า T2",price:"—",lat:31.1517,lng:121.805},
+    ],
+    optional:[
+      {name:"Maglev Train",desc:"ถ้าพักในเมืองคืนสุดท้ายแทน นั่งรถไฟแม่เหล็ก 300+ กม./ชม. จาก Longyang Rd → PVG ~8 นาที"},
+    ]
+  },
+];
+
+const EXTRA = [
+  {type:"must",day:"ทั้งทริป",name:"เสี่ยวหลงเปา",en:"小笼包 · soup dumpling (มีหมู)",
+   desc:"ของขึ้นชื่อสุดของเซี่ยงไฮ้ ซาลาเปาน้ำซุปในตัว — ไส้หมูเกือบทั้งหมด เพื่อนมุสลิมเลี่ยง ลองที่ Jia Jia Tang Bao / Din Tai Fung",price:"~50–120",lat:31.2304,lng:121.4737},
+  {type:"must",day:"ทั้งทริป",name:"ปูขนเซี่ยงไฮ้",en:"大闸蟹 · hairy crab (ฤดูกาล!)",
+   desc:"พ.ย. คือพีคฤดูกาลพอดี ปูตัวเมียไข่เต็ม — มุสลิมกินได้ (ซีฟู้ด) แต่สั่งร้านฮาลาลที่ทำซีฟู้ด เลี่ยงร้านเสิร์ฟกับเหล้าเหลือง",price:"~120–400/ตัว"},
+  {type:"food",day:"ทั้งทริป",name:"ไม้ย่างเนื้อแกะซินเจียง",en:"羊肉串 · lamb skewers (清真)",
+   desc:"ของกินเล่นฮาลาลที่ต้องลอง เนื้อแกะเสียบไม้ย่างเครื่องเทศ red willow skewers ที่ Xinjiang Pamir/Midina ใกล้ถนนนานจิง",price:"~5–10/ไม้",lat:31.233217,lng:121.479203},
+  {type:"halal",day:"Day 9",name:"Eli Falafel",en:"halal · อาหารอาหรับ",
+   desc:"falafel, labneh, shawarma เนื้อ อยู่ย่านฝรั่งเศส เผื่อเพื่อนอยากเปลี่ยนจากอาหารจีน",price:"~50–90/คน",lat:31.21176,lng:121.4462},
+  {type:"shop",day:"ทั้งทริป",name:"ของฝาก: ชา + ขนมเซี่ยงไฮ้",
+   desc:"ใบชา (เถียกวนอิน/หลงจิ่ง), ขนม White Rabbit, ของที่ระลึกอาร์ตช็อปพิพิธภัณฑ์ (Long Museum/PSA shop เด็ด)",price:"ตามซื้อ"},
+  {type:"sight",day:"ทางเลือก",name:"Oriental Pearl TV Tower",en:"东方明珠",
+   desc:"หอคอยไอคอนของ Lujiazui วิวพาโนรามา Pudong+The Bund มีพื้นกระจก ถ้าอยากขึ้นจุดชมเมือง",price:"~160–220",lat:31.239689,lng:121.499755},
+  {type:"activity",day:"Day 8",name:"Maglev Train",en:"รถไฟแม่เหล็ก",
+   desc:"300+ กม./ชม. จาก Longyang Rd → Pudong Airport ~8 นาที ประสบการณ์ห้ามพลาดถ้าบิน PVG",price:"~50 เที่ยวเดียว",lat:31.2096,lng:121.5570},
+];
+
+const FILTERS = [
+  {key:"all", label:"ทั้งหมด"},{key:"sight", label:"สถานที่"},{key:"food", label:"อาหาร"},
+  {key:"halal", label:"ฮาลาล"},{key:"must", label:"ห้ามพลาด"},{key:"shop", label:"ช้อปปิ้ง"},{key:"activity", label:"กิจกรรม"},
+];
+const TYPE_LABEL = {sight:"สถานที่",food:"อาหาร",halal:"ฮาลาล",shop:"ช้อปปิ้ง",must:"ห้ามพลาด",activity:"กิจกรรม"};
+const TYPE_CLASS = {sight:"t-sight",food:"t-food",halal:"t-halal",shop:"t-shop",must:"t-must",activity:"t-activity"};
+
+const INFO = [
+  {title:"เที่ยวบิน (Thai Airways)", icon:'<path d="M2 16l20-7-9 13-2-6-9 0z"/>',
+   rows:[
+     {name:"ขาไป · TG662",val:"7 พ.ย. 01:10 → 06:25",note:"BKK สุวรรณภูมิ → Shanghai PVG T2 · A350-900 · 4 ชม. 15 นาที · ที่นั่ง 52K · Seafood meal"},
+     {name:"ขากลับ · TG665",val:"14 พ.ย. 17:20 → 21:15",note:"Shanghai PVG T2 → BKK สุวรรณภูมิ · A350-900 · 4 ชม. 55 นาที · ที่นั่ง 55A · Seafood meal"},
+     {name:"กระเป๋า",val:"1 PC / คน",note:"โหลดได้ตามที่ระบุในตั๋ว ไม่มีค่าใช้จ่ายเพิ่ม"},
+   ]},
+  {title:"ฉุกเฉิน", icon:'<path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="M9 12l2 2 4-4"/>',
+   rows:[
+     {name:"ตำรวจ",val:"110",note:"Police — เหตุด่วนเหตุร้าย",emerg:true},
+     {name:"รถพยาบาล",val:"120",note:"Ambulance — เจ็บป่วยฉุกเฉิน",emerg:true},
+     {name:"ดับเพลิง",val:"119",note:"Fire",emerg:true},
+     {name:"สถานกงสุลใหญ่ไทย ณ เซี่ยงไฮ้",val:"+86 21 5260 9899",note:"Royal Thai Consulate-General · ติดต่อกรณีคนไทยมีปัญหา"},
+   ]},
+  {title:"แอปที่ต้องมี", icon:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+   rows:[
+     {name:"Alipay (支付宝)",val:"ผูกบัตรก่อนบิน",note:"จ่ายเงินแทบทุกที่ รวมสแกนเข้า Metro/สั่งอาหาร/ซื้อตั๋ว — สำคัญที่สุด"},
+     {name:"WeChat (微信)",val:"WeChat Pay + แชต",note:"จ่ายเงิน + คุย + มินิโปรแกรมเรียกแท็กซี่/อาหาร ผูกบัตรล่วงหน้า"},
+     {name:"DiDi (滴滴)",val:"เรียกรถ",note:"แท็กซี่/รถเรียกแบบ Grab ของจีน มีในตัว Alipay/WeChat ด้วย"},
+     {name:"VPN",val:"ติดตั้งก่อนออกจากไทย!",note:"Google Maps/IG/LINE/WhatsApp ใช้ไม่ได้ในจีนถ้าไม่มี VPN — ในจีนโหลด VPN ไม่ได้แล้ว"},
+     {name:"Shanghai Disney Resort app",val:"ตั๋ว + คิว",note:"ซื้อตั๋วสวน จอง Premier Access เช็คเวลารอเครื่องเล่นเรียลไทม์"},
+   ]},
+  {title:"เดินทาง", icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+   rows:[
+     {name:"Metro เซี่ยงไฮ้",val:"~3–9 / เที่ยว",note:"ครอบคลุมทุกจุดในแผน · เปิด ~5:30–22:30 · สแกน Alipay เข้าออก"},
+     {name:"สาย 11 → Disney",val:"สุดสายฝั่งตะวันออก",note:"สถานี Disney Resort เชื่อมเข้าสวน/โรงแรม"},
+     {name:"Maglev → PVG",val:"~50 · 8 นาที",note:"จาก Longyang Rd · 300+ กม./ชม."},
+     {name:"DiDi (เรียกรถ)",val:"เริ่ม ~15–20",note:"สะดวกเวลาขนของหรือดึก · จ่ายผ่านแอป"},
+   ]},
+  {title:"เว็บ/ลิงก์สำคัญ", icon:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18"/>',
+   rows:[
+     {name:"Shanghai Disney Resort",val:'<a class="cval" href="https://www.shanghaidisneyresort.com/" target="_blank" rel="noopener">shanghaidisneyresort.com</a>',note:"ตั๋ว + เวลาเปิด + Premier Access",html:true},
+     {name:"Power Station of Art",val:'<a class="cval" href="http://www.powerstationofart.com/" target="_blank" rel="noopener">powerstationofart.com</a>',note:"เช็คนิทรรศการก่อนไป (ปิดจันทร์)",html:true},
+     {name:"Long Museum",val:'<a class="cval" href="http://www.thelongmuseum.org/" target="_blank" rel="noopener">thelongmuseum.org</a>',note:"นิทรรศการหมุนเวียน West Bund",html:true},
+     {name:"Yu Garden",val:'<a class="cval" href="https://www.yugarden.com.cn/" target="_blank" rel="noopener">yugarden.com.cn</a>',note:"เวลาเปิด + อีเวนต์ (ปิดจันทร์)",html:true},
+   ]},
+  {title:"ประโยคจีนช่วยชีวิต", icon:'<path d="M3 5h12M9 3v2M11 5c0 4-3 7-7 8M5 9c0 3 4 5 7 6M15 19h6M18 16l3 7M18 16l-3 7"/>',
+   phrases:[
+     {th:"นี่ฮาลาลไหม / มีหมูไหม",zh:"这个是清真吗？有猪肉吗？"},
+     {th:"ไม่เอาหมู / ไม่เอาเหล้า",zh:"不要猪肉 / 不要酒"},
+     {th:"ห้องน้ำอยู่ไหน",zh:"洗手间在哪里？"},
+     {th:"เท่าไหร่",zh:"多少钱？"},
+     {th:"สแกนจ่ายได้ไหม",zh:"可以扫码支付吗？"},
+     {th:"ขอบคุณ",zh:"谢谢 (เซี่ยเซี่ย)"},
+   ]},
+  {title:"กับดักวันจันทร์ + ทิป", icon:'<path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+   rows:[
+     {name:"ปิดวันจันทร์ ⚠",val:"PSA · สวนยู่หยวน",note:"แผนนี้เลี่ยงให้แล้ว — วันจันทร์ (Day 3) เที่ยวย่านฝรั่งเศส/Tianzifang ที่เปิดทุกวัน"},
+     {name:"ดิสนีย์ Day 6",val:"พฤหัส = วันธรรมดา",note:"คนน้อยกว่าเสาร์-อาทิตย์ คิว TRON สั้นกว่าครึ่ง"},
+     {name:"หาฮาลาลมองหา 清真",val:"qīngzhēn",note:"ตัวอักษรนี้หน้าร้าน = เครื่องหมายอาหารมุสลิมจีนอย่างเป็นทางการ"},
+     {name:"อากาศ พ.ย.",val:"12–19°C",note:"เย็นสบาย พกแจ็คเก็ตบาง เช้า-ค่ำเย็นกว่า"},
+     {name:"เงินสด",val:"แทบไม่ใช้",note:"ทุกที่สแกนจ่าย · เตรียม Alipay/WeChat ผูกบัตรให้พร้อมก่อนบิน"},
+   ]},
+];
+
+const IC = {
+  transit:'<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21l2-4M16 21l-2-4M8 7h.01M16 7h.01"/></svg>',
+  price:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9h6M9 13h6M12 9v8"/></svg>',
+  hours:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  pin:'<svg viewBox="0 0 24 24"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  route:'<svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-7-8-3z"/></svg>',
+  map:'<svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>',
+};
+
+const gmaps = (name,lat,lng)=> (lat&&lng)
+  ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" Shanghai")}`;
+
+/* ============ DAILY PLAN + MAP ============ */
+const daystrip = document.getElementById('daystrip');
+const dayContent = document.getElementById('dayContent');
+let activeDay = 0;
+
+DAYS.forEach((d,i)=>{
+  const chip=document.createElement('button');
+  chip.className='daychip';
+  chip.setAttribute('aria-selected', i===0);
+  chip.innerHTML=`<div class="dlab">D${d.n}</div><div class="dnum">${d.date}</div><div class="ddow">${d.dow.split(' ')[0]}</div>`;
+  chip.addEventListener('click',()=>{activeDay=i;renderDay();});
+  daystrip.appendChild(chip);
+});
+
+/* Self-contained SVG map: projects lat/lng to an SVG viewBox, draws a dashed
+   route and numbered pins. Works fully offline — no tiles, no external library. */
+function renderSvgMap(geo){
+  const W=820, H=300, pad=46;
+  const lats=geo.map(s=>s.lat), lngs=geo.map(s=>s.lng);
+  let minLat=Math.min(...lats), maxLat=Math.max(...lats);
+  let minLng=Math.min(...lngs), maxLng=Math.max(...lngs);
+  // guard against a single point or a flat line
+  if(maxLat-minLat<0.006){const c=(maxLat+minLat)/2;minLat=c-0.003;maxLat=c+0.003;}
+  if(maxLng-minLng<0.006){const c=(maxLng+minLng)/2;minLng=c-0.003;maxLng=c+0.003;}
+  const sx=(W-2*pad)/(maxLng-minLng), sy=(H-2*pad)/(maxLat-minLat);
+  const sc=Math.min(sx,sy);
+  const offX=(W-(maxLng-minLng)*sc)/2, offY=(H-(maxLat-minLat)*sc)/2;
+  const X=lng=>offX+(lng-minLng)*sc;
+  const Y=lat=>H-(offY+(lat-minLat)*sc); // invert: north up
+  const pts=geo.map(s=>({x:X(s.lng),y:Y(s.lat),food:(s.type==='food'||s.type==='halal'),name:s.name,time:s.time||''}));
+
+  // subtle grid backdrop
+  let grid='';
+  for(let gx=0;gx<=W;gx+=68) grid+=`<line x1="${gx}" y1="0" x2="${gx}" y2="${H}" stroke="#ded2b8" stroke-width="1"/>`;
+  for(let gy=0;gy<=H;gy+=68) grid+=`<line x1="0" y1="${gy}" x2="${W}" y2="${gy}" stroke="#ded2b8" stroke-width="1"/>`;
+
+  // route line
+  let route='';
+  if(pts.length>1){
+    const dpath=pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+    route=`<path d="${dpath}" fill="none" stroke="#d6452c" stroke-width="3" stroke-dasharray="7 7" opacity="0.75" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+
+  // pins
+  const pins=pts.map((p,i)=>{
+    const col=p.food?'#3f7d6e':'#d6452c';
+    return `<g>
+      <line x1="${p.x}" y1="${p.y}" x2="${p.x}" y2="${p.y-2}" stroke="${col}"/>
+      <circle cx="${p.x}" cy="${p.y}" r="14" fill="${col}" stroke="#fff" stroke-width="2.5"/>
+      <text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="'Bebas Neue',sans-serif">${i+1}</text>
+    </g>`;
+  }).join('');
+
+  return `<svg class="daymap" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="แผนที่เส้นทางประจำวัน">
+    <rect width="${W}" height="${H}" fill="#eee6d4"/>
+    ${grid}
+    ${route}
+    ${pins}
+  </svg>`;
+}
+
+function renderDay(){
+  [...daystrip.children].forEach((c,i)=>c.setAttribute('aria-selected', i===activeDay));
+  const d=DAYS[activeDay];
+  const geo = d.stops.filter(s=>s.lat&&s.lng);
+
+  let html=`<div class="dayhead">
+    <div class="deyebrow">${d.eyebrow}</div>
+    <h2>${d.title}</h2>
+    <span class="dzone">${IC.pin}${d.zone}</span>
+    <div class="dnote">${d.note}</div>
+  </div>`;
+
+  // map container
+  if(geo.length){
+    let routeUrl;
+    if(geo.length>1){
+      const wp=geo.map(s=>`${s.lat},${s.lng}`);
+      routeUrl=`https://www.google.com/maps/dir/${wp.join('/')}`;
+    } else {
+      routeUrl=gmaps(geo[0].name,geo[0].lat,geo[0].lng);
+    }
+    html+=`<div class="mapwrap">
+      <a class="maproute" href="${routeUrl}" target="_blank" rel="noopener">${IC.route} Open route</a>
+      <div id="daymap"></div>
+      ${geo.length>1?`<div class="maplegend"><span><i class="sight"></i>สถานที่</span><span><i class="food"></i>ร้านอาหาร</span></div>`:''}
+    </div>`;
+  }
+
+  // timeline
+  let stopIdx=0;
+  d.stops.forEach(s=>{
+    const hasGeo = s.lat&&s.lng;
+    if(hasGeo) stopIdx++;
+    const cls = (s.type==='food'||s.type==='halal') ? 'food' : (hasGeo?'':'plain');
+    const num = hasGeo ? stopIdx : '·';
+    html+=`<div class="stop ${cls}"><span class="dot">${num}</span>
+      <div class="card ${cls==='food'?'food':''}">
+        <div class="time">${s.time||''}</div>
+        <h3>${s.name}${s.en?`<span class="en">${s.en}</span>`:''}</h3>
+        <div class="tagrow"><span class="tag ${TYPE_CLASS[s.type]||'t-activity'}">${TYPE_LABEL[s.type]||'กิจกรรม'}</span></div>
+        ${s.desc?`<p class="desc">${s.desc}</p>`:''}
+        <div class="meta">
+          ${s.transit?`<span class="mi">${IC.transit}<span><b>${s.transit}</b></span></span>`:''}
+          ${s.hours?`<span class="mi">${IC.hours}<span>${s.hours}</span></span>`:''}
+          ${s.price?`<span class="mi">${IC.price}<span class="price">¥${s.price.replace(/^¥/,'')}</span></span>`:''}
+        </div>
+        ${hasGeo?`<a class="maplink" href="${gmaps(s.name,s.lat,s.lng)}" target="_blank" rel="noopener">${IC.map} เปิดใน Google Maps</a>`:''}
+      </div></div>`;
+  });
+
+  if(d.optional && d.optional.length){
+    html+=`<div class="optgroup"><div class="ogt">◆ เผื่อมีเวลาเหลือในโซนนี้</div>`;
+    d.optional.forEach(o=>{html+=`<div class="optitem"><b>${o.name}</b> — ${o.desc}</div>`;});
+    html+=`</div>`;
+  }
+  dayContent.innerHTML=html;
+
+  // build map (self-contained SVG — no external library)
+  const mapHost=document.getElementById('daymap');
+  if(mapHost && geo.length){
+    mapHost.innerHTML=renderSvgMap(geo);
+  }
+}
+renderDay();
+
+/* ============ ALL ITEMS + FILTER ============ */
+const ALL=[];
+DAYS.forEach(d=>{
+  d.stops.forEach(s=>{
+    if(s.type==='activity' && /เช็คอิน|เช็คเอาท์|ย้าย|ถึง Pudong|ไปสนามบิน|พักผ่อนในรีสอร์ต/.test(s.name)) return;
+    ALL.push({...s, day:`Day ${d.n}`, dayN:d.n});
+  });
+});
+EXTRA.forEach(e=>ALL.push({...e, dayN:99}));
+
+const filterbar=document.getElementById('filterbar');
+const allList=document.getElementById('allList');
+let activeFilter='all';
+
+FILTERS.forEach(f=>{
+  const count = f.key==='all' ? ALL.length : ALL.filter(x=>x.type===f.key).length;
+  const b=document.createElement('button');
+  b.className='fbtn';
+  b.setAttribute('aria-pressed', f.key==='all');
+  b.innerHTML=`${f.label}<span class="ct">${count}</span>`;
+  b.dataset.key=f.key;
+  b.addEventListener('click',()=>{activeFilter=f.key;renderAll();});
+  filterbar.appendChild(b);
+});
+
+function renderAll(){
+  [...filterbar.children].forEach(b=>b.setAttribute('aria-pressed', b.dataset.key===activeFilter));
+  const items = activeFilter==='all' ? ALL : ALL.filter(x=>x.type===activeFilter);
+  if(!items.length){allList.innerHTML='<div class="empty">ไม่มีรายการในหมวดนี้</div>';return;}
+  allList.innerHTML = items.map(s=>{
+    const isPlace = (s.type!=='food' || s.lat) ; // show map link whenever we have coords
+    const hasGeo = s.lat&&s.lng;
+    return `<div class="listitem">
+      <div class="li-top">
+        <h4>${s.name}${s.en?`<span class="en">${s.en}</span>`:''}</h4>
+        <span class="li-day">${s.day||''}</span>
+      </div>
+      <div class="tagrow"><span class="tag ${TYPE_CLASS[s.type]||'t-activity'}">${TYPE_LABEL[s.type]||'กิจกรรม'}</span></div>
+      ${s.desc?`<p>${s.desc}</p>`:''}
+      <div class="li-meta">
+        ${s.transit?`<span>🚇 ${s.transit}</span>`:''}
+        ${s.hours?`<span>🕘 ${s.hours}</span>`:''}
+        ${s.price?`<span class="price">¥${s.price.replace(/^¥/,'')}</span>`:''}
+        ${hasGeo?`<a class="maplink" href="${gmaps(s.name,s.lat,s.lng)}" target="_blank" rel="noopener">${IC.map} แผนที่</a>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+renderAll();
+
+/* ============ CONTACTS ============ */
+const infoContent=document.getElementById('infoContent');
+infoContent.innerHTML = INFO.map(sec=>{
+  let inner='';
+  if(sec.phrases){
+    inner=`<table class="phrasetable">${sec.phrases.map(p=>`<tr><td>${p.th}</td><td>${p.zh}</td></tr>`).join('')}</table>`;
+  } else {
+    inner=sec.rows.map(r=>`
+      <div class="crow ${r.emerg?'emerg':''}">
+        <div class="cname"><span>${r.name}</span>${r.html?r.val:`<span class="cval">${r.val}</span>`}</div>
+        ${r.note?`<p>${r.note}</p>`:''}
+      </div>`).join('');
+  }
+  return `<div class="csec"><h3><svg viewBox="0 0 24 24">${sec.icon}</svg>${sec.title}</h3>${inner}</div>`;
+}).join('');
+
+/* ============ TAB SWITCHING ============ */
+const tabs=document.querySelectorAll('.tab');
+const panels=document.querySelectorAll('.panel');
+tabs.forEach(t=>{
+  t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.setAttribute('aria-selected', x===t));
+    panels.forEach(p=>p.classList.toggle('active', p.id===t.dataset.panel));
+    window.scrollTo({top:0,behavior:'auto'});
+  });
+});
+</script>
+</body>
+</html>
