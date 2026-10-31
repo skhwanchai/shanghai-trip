@@ -1387,7 +1387,14 @@ if (h === "pearl") { renderPearl(); go("pearl", true); }
 else if (h === "food") { renderFood(); go("food", true); }
 else if (["home","plan","map","places","phrases","wallet"].includes(h)) go(h);
 if ("speechSynthesis" in window) speechSynthesis.getVoices();
-if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => {});
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  // มีเวอร์ชันใหม่ขึ้น GitHub → โหลดหน้าใหม่ให้อัตโนมัติครั้งเดียว ไม่ต้องกดรีเฟรชเอง
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController && !reloaded) { reloaded = true; location.reload(); } });
+  navigator.serviceWorker.register("sw.js").then(r => r.update()).catch(() => {});
+  navigator.serviceWorker.ready.then(r => r.active && r.active.postMessage("cache-photos")).catch(() => {});
+}
 })();
 </script>
 </body>
