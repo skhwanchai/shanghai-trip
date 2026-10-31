@@ -1310,7 +1310,7 @@ function renderHome() {
         ${p ? `<div class="acts">${p.cn ? `<button class="btn red" data-show="${p.id}">${ICON.taxi}ให้คนขับดู</button>` : ""}${p.ll ? `<button class="btn" data-onmap="${p.id}">${ICON.map}แผนที่</button>` : ""}<button class="btn" data-goplace="${p.id}">รายละเอียด</button></div>` : ""}`;
     } else nx = `<div class="lbl">วันนี้</div><h3>ครบทุกจุดแล้ว พักผ่อนได้</h3><p>ดูแผนพรุ่งนี้ได้ที่แท็บ แผน</p>`;
   } else if (left > 0) {
-    st = `<b>อีก ${left} วัน</b>7–14 พ.ย. · ออกเดินทางตีสอง`;
+    st = `<b>อีก ${left} วัน</b>7–14 พ.ย.`;
     const done = Object.values(checked).filter(Boolean).length;
     nx = `<div class="lbl">ก่อนบิน</div><h3>เช็กลิสต์เตรียมตัว ${done} / ${CHECKLIST.length}</h3><p>${esc(CHECKLIST.find((c, i) => !checked[i]) || "พร้อมแล้ว")}</p><div class="acts"><button class="btn" id="goCheck">เปิดเช็กลิสต์</button></div>`;
   } else {
