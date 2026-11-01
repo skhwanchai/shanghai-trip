@@ -662,21 +662,12 @@ nav button.on{color:var(--gold)}
     </div>
 
     <div class="sect">โรงแรม</div>
-    <div class="box">
-      <label class="l" for="hName">ชื่อโรงแรม (ภาษาจีน)</label>
-      <input id="hName" class="song" placeholder="上海……酒店">
-      <label class="l" for="hAddr" style="margin-top:8px">ที่อยู่ (ภาษาจีน)</label>
-      <textarea id="hAddr" class="song" placeholder="上海市……路……号"></textarea>
-      <label class="l" for="hPhone" style="margin-top:8px">เบอร์โรงแรม</label>
-      <input id="hPhone" inputmode="tel" placeholder="+86 21 ……">
-      <p class="muted" style="margin:6px 0 0">เก็บในเครื่องนี้เท่านั้น</p>
-      <div class="acts"><button class="btn red" id="hShow" type="button">แสดงให้คนขับ: กลับโรงแรม</button></div>
-    </div>
+    <div id="hotelList"></div>
 
     <div class="sect">เที่ยวบิน</div>
     <div class="box">
       <label class="l" for="fOut">ขาไป</label><input id="fOut" placeholder="เที่ยวบิน · 7 พ.ย. 02:00 BKK → PVG">
-      <label class="l" for="fBack" style="margin-top:8px">ขากลับ</label><input id="fBack" placeholder="เที่ยวบิน · 14 พ.ย. เวลา · เทอร์มินัล">
+      <label class="l" for="fBack" style="margin-top:8px">ขากลับ</label><input id="fBack" placeholder="เที่ยวบิน · 15 พ.ย. เวลา · เทอร์มินัล">
     </div>
 
     <div class="sect">ฉุกเฉิน</div>
@@ -721,7 +712,7 @@ nav button.on{color:var(--gold)}
 <div class="toast" id="toast" role="status"></div>
 
 <nav id="tabs" aria-label="เมนู">
-  <div class="navbrand" aria-hidden="true"><b>Shanghai</b><span>上海 · 7–14 พ.ย. 2026</span></div>
+  <div class="navbrand" aria-hidden="true"><b>Shanghai</b><span>上海 · 7–15 พ.ย. 2026</span></div>
   <button data-v="home" class="on"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>ไฮไลต์</button>
   <button data-v="plan"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM4 7l2-3h12l2 3M9 11h6"/></svg>แผน</button>
   <button data-v="map"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg>แผนที่</button>
@@ -1158,12 +1149,41 @@ $("#expExport").onclick = () => {
   download("shanghai-expenses.csv", "﻿" + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n"), "text/csv");
 };
 
-const FIELDS = ["hName","hAddr","hPhone","fOut","fBack"], info = store.get("info", {});
+const FIELDS = ["fOut","fBack"], info = store.get("info", {});
 FIELDS.forEach(f => { const el = $("#" + f); el.value = info[f] || ""; el.addEventListener("input", () => { info[f] = el.value; store.set("info", info); }); });
-$("#hShow").onclick = () => {
-  if (!info.hName && !info.hAddr) { toast("กรอกชื่อหรือที่อยู่โรงแรมก่อน"); $("#hName").focus(); return; }
-  show({ lead: "请送我回酒店", big: info.hName || "", addr: info.hAddr || "", sub: info.hPhone ? "☎ " + info.hPhone : "" });
-};
+
+/* ---------- ที่พัก ---------- */
+// โรงแรมของคืนนี้ (วันเช็กเอาต์นับเป็นของโรงแรมเดิมจนถึงเที่ยง)
+function hotelFor(date) {
+  const H = typeof HOTELS === "undefined" ? [] : HOTELS;
+  return H.find(h => date >= h.in && date < h.out) || H.find(h => date === h.out) || null;
+}
+function showHotel(id) {
+  const p = P[id]; if (!p) return;
+  const tel = (p.hours.match(/☎\s*([\d-]+)/) || [])[1];
+  show({ lead: "请送我回酒店", big: p.cn, addr: p.addr, sub: p.th + (tel ? " · ☎ " + tel : "") });
+}
+function renderHotels() {
+  const H = typeof HOTELS === "undefined" ? [] : HOTELS, today = SH().date;
+  $("#hotelList").innerHTML = H.map(h => {
+    const p = P[h.place]; if (!p) return "";
+    const a = dI(h.in), b = dI(h.out), nights = Math.round((new Date(h.out) - new Date(h.in)) / 864e5);
+    const tel = (p.hours.match(/☎\s*([\d-]+)/) || [])[1];
+    const now = today >= h.in && today < h.out;
+    return `<div class="box" style="margin-bottom:10px${now ? ";border-color:var(--lacquer)" : ""}">
+      <div class="muted" style="color:var(--jade);font-weight:600">${now ? "คืนนี้พักที่นี่ · " : ""}เข้า ${a.d} → ออก ${b.d} ${TH_MON[b.m]} · ${nights} คืน</div>
+      <h3 style="margin:2px 0 0;font-family:var(--thai-display);font-weight:400;font-size:20px;line-height:1.35">${esc(p.th)}</h3>
+      <div class="song" style="color:var(--lacquer);font-size:17px">${esc(p.cn)}</div>
+      <p class="muted" style="margin:6px 0 0">${esc(p.hours.replace(/\s*·\s*☎.*$/, ""))}</p>
+      <div class="acts">
+        <button class="btn red" data-hotel="${p.id}">${ICON.taxi}ให้คนขับดู: กลับโรงแรม</button>
+        <button class="btn" data-goplace="${p.id}">รายละเอียด</button>
+        ${tel ? `<a class="btn" href="tel:+86${tel.replace(/^0|-/g, "")}">โทร</a>` : ""}
+      </div></div>`;
+  }).join("");
+}
+renderHotels();
+document.addEventListener("click", e => { const b = e.target.closest("[data-hotel]"); if (b) { e.stopPropagation(); showHotel(b.dataset.hotel); } }, true);
 $("#emgList").innerHTML = EMERGENCY.map(x => `<div class="emg"><span>${esc(x.label)}</span><a href="tel:${esc(x.num)}">${esc(x.num)}</a></div>`).join("")
   + `<p class="muted" style="margin:8px 0 0">* เบอร์กงสุลมาจากเว็บรวบรวมข้อมูล ไม่ใช่เว็บทางการ เช็กกับเพจ RTCGshanghai ก่อนบิน</p>
      <div class="acts"><button class="btn red" data-show="consulate">${ICON.taxi}ให้คนขับดู: ไปสถานกงสุล</button></div>`;
@@ -1309,8 +1329,10 @@ function renderHome() {
       nx = `<div class="lbl">ถัดไป · ${esc(stp.t)}</div><h3>${esc(stp.what)}</h3>${stp.tip ? `<p>${esc(stp.tip)}</p>` : ""}
         ${p ? `<div class="acts">${p.cn ? `<button class="btn red" data-show="${p.id}">${ICON.taxi}ให้คนขับดู</button>` : ""}${p.ll ? `<button class="btn" data-onmap="${p.id}">${ICON.map}แผนที่</button>` : ""}<button class="btn" data-goplace="${p.id}">รายละเอียด</button></div>` : ""}`;
     } else nx = `<div class="lbl">วันนี้</div><h3>ครบทุกจุดแล้ว พักผ่อนได้</h3><p>ดูแผนพรุ่งนี้ได้ที่แท็บ แผน</p>`;
+    const ht = hotelFor(now.date);
+    if (ht && P[ht.place]) nx += `<div class="acts" style="margin-top:6px"><button class="btn" data-hotel="${ht.place}">${ICON.taxi}กลับโรงแรม: ${esc(P[ht.place].th.split(" (")[0])}</button></div>`;
   } else if (left > 0) {
-    st = `<b>อีก ${left} วัน</b>7–14 พ.ย.`;
+    st = `<b>อีก ${left} วัน</b>7–15 พ.ย.`;
     const done = Object.values(checked).filter(Boolean).length;
     nx = `<div class="lbl">ก่อนบิน</div><h3>เช็กลิสต์เตรียมตัว ${done} / ${CHECKLIST.length}</h3><p>${esc(CHECKLIST.find((c, i) => !checked[i]) || "พร้อมแล้ว")}</p><div class="acts"><button class="btn" id="goCheck">เปิดเช็กลิสต์</button></div>`;
   } else {
