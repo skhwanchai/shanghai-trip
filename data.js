@@ -592,3 +592,11 @@ const HOTELS = [
   { place: "baihome", in: "2026-11-07", out: "2026-11-13" },
   { place: "toystory", in: "2026-11-13", out: "2026-11-15" }
 ];
+
+/* ---------- ค่าใช้จ่ายกลาง (Google Sheet) ----------
+   url = ลิงก์เปิดชีต · webapp = ลิงก์ Web app จาก Apps Script (ใส่แล้วทุกเครื่องเชื่อมอัตโนมัติ)
+*/
+const SHARED_SHEET = {
+  url: "https://docs.google.com/spreadsheets/d/1CmQtGoi5vmf4PwHZHK_JOtJwLshdbmeipg5N1K6OzwU/edit",
+  webapp: ""
+};

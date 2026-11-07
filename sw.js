@@ -1,5 +1,5 @@
 // เปลี่ยนเลขเวอร์ชันทุกครั้งที่แก้ไฟล์ เพื่อให้มือถือโหลดของใหม่
-const VERSION = "sh26-v10";
+const VERSION = "sh26-v11";
 const PHOTOS = "sh26-photos-v1"; // รูปจาก Unsplash แยกไว้ จะได้ไม่ต้องโหลดใหม่ทุกครั้งที่อัปเดตแอป
 const FILES = [
   "./",
@@ -13,7 +13,8 @@ const FILES = [
   "./fonts/poiret-one-latin-400-normal.woff2",
   "./fonts/chonburi-thai-400-normal.woff2",
   "./fonts/chonburi-latin-400-normal.woff2",
-  "./fonts/mrs-saint-delafield-latin-400-normal.woff2"
+  "./fonts/mrs-saint-delafield-latin-400-normal.woff2",
+  "./sheet-script.txt"
 ];
 
 // ขนาดรูปต้องตรงกับที่ index.html ใช้

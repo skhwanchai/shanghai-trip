@@ -379,12 +379,38 @@ textarea{min-height:64px;resize:vertical}
 
 /* ================= แถบล่าง ================= */
 nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--night);border-top:3px double var(--gold);
-  display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  display:grid;grid-template-columns:repeat(6,1fr);padding:6px 2px calc(6px + env(safe-area-inset-bottom))}
 nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:#9f9479;padding:3px 0}
 nav svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--gold)}
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:2px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:40}
 .toast.on{opacity:1}
+
+
+/* ================= ค่าใช้จ่ายกลาง ================= */
+.syncbar{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;color:var(--ink-2)}
+.syncbar i{width:8px;height:8px;border-radius:50%;background:#9a9a9a;flex:0 0 auto}
+.syncbar.ok i{background:#3f9a6b}.syncbar.wait i{background:#d39a2c}.syncbar.err i{background:var(--lacquer)}
+.syncbar span{flex:1}
+#sxForm[hidden],.syncbar [hidden]{display:none}
+.who{display:flex;gap:6px;flex-wrap:wrap}
+.who button{border:1px solid var(--rule);background:var(--paper-2);border-radius:999px;padding:6px 12px;font-size:14.5px}
+.who button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.who.split button.on{background:var(--jade);border-color:var(--jade);color:#f6ead0}
+.who .add{border-style:dashed;color:var(--ink-2)}
+.settle{display:grid;gap:8px}
+.pay{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;padding:10px 12px}
+.pay b{font-weight:600}
+.pay .arrow{font-size:13px;color:var(--lacquer);text-align:center;line-height:1.2}
+.pay .arrow strong{display:block;font-size:17px;color:var(--ink)}
+.pay span:last-child{text-align:right}
+.bal{display:grid;grid-template-columns:1fr auto auto;gap:4px 14px;font-size:14px}
+.bal .h{color:var(--ink-2);font-size:12.5px}
+.bal .pos{color:var(--jade);font-weight:600}.bal .neg{color:var(--lacquer);font-weight:600}
+.sx .pend{font-size:11.5px;color:#b07a12;margin-left:6px}
+.steps{margin:6px 0 0;padding-left:20px;font-size:14.5px}
+.steps li{margin:7px 0}
+.steps b{font-weight:600}
 
 /* ================= จอใหญ่: แท็บเล็ต ================= */
 .navbrand{display:none}
@@ -639,6 +665,41 @@ nav button.on{color:var(--gold)}
 </section>
 
 <!-- ================= กระเป๋า ================= -->
+<!-- ================= ค่าใช้จ่ายกลาง ================= -->
+<section class="view" id="v-shared">
+  <div class="bar"><div class="wrap"><h1>ค่าใช้จ่ายกลาง</h1><span class="cn">AA制</span></div></div>
+  <div class="wrap">
+    <div class="syncbar" id="sxSync"><i></i><span></span><button class="btn" id="sxSyncBtn" type="button">ซิงก์</button></div>
+    <div class="ledger">
+      <div><small>รวมทั้งกลุ่ม</small><b id="sxTot">¥0</b><em id="sxTotThb">฿0</em></div>
+      <div><small id="sxMeLbl">คุณจ่ายไป</small><b id="sxMine">¥0</b><em id="sxMineThb">฿0</em></div>
+    </div>
+
+    <div id="sxSetup"></div>
+
+    <form class="add" id="sxForm" autocomplete="off">
+      <div><label class="l" for="sxAmt">จำนวนเงิน (หยวน)</label><input id="sxAmt" inputmode="decimal" placeholder="0"></div>
+      <div><label class="l" for="sxNote">ค่าอะไร</label><input id="sxNote" placeholder="ค่า Didi, มื้อเย็น"></div>
+      <div class="full"><label class="l">ใครจ่าย</label><div class="who" id="sxPayer"></div></div>
+      <div class="full"><label class="l">หารกับใคร</label><div class="who split" id="sxSplit"></div></div>
+      <div class="full cats" id="sxCats" role="radiogroup" aria-label="หมวด"></div>
+      <button class="save full" type="submit">บันทึกค่าใช้จ่ายกลาง</button>
+    </form>
+
+    <div class="sect">ใครต้องโอนให้ใคร</div>
+    <div id="sxSettle"></div>
+    <div class="acts"><button class="btn red" id="sxShare" type="button">แชร์สรุปเข้า LINE</button><button class="btn" id="sxCsv" type="button">ส่งออก CSV</button><a class="btn" id="sxOpen" target="_blank" rel="noopener">เปิด Google Sheet</a></div>
+
+    <div class="sect">รายการทั้งหมด</div>
+    <div id="sxList"></div>
+
+    <div class="sect">ตั้งค่า</div>
+    <div class="box" id="sxSettings"></div>
+    <div style="height:24px"></div>
+  </div>
+</section>
+
+<!-- ================= กระเป๋า ================= -->
 <section class="view" id="v-wallet">
   <div class="bar"><div class="wrap"><h1>กระเป๋า</h1><span class="cn">钱包</span></div></div>
   <div class="wrap">
@@ -717,6 +778,7 @@ nav button.on{color:var(--gold)}
   <button data-v="plan"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM4 7l2-3h12l2 3M9 11h6"/></svg>แผน</button>
   <button data-v="map"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg>แผนที่</button>
   <button data-v="phrases"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/></svg>พูดจีน</button>
+  <button data-v="shared"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M3 19c0-3 2.2-5 5-5s5 2 5 5M13.5 18.5c.3-2.4 1.6-3.8 3.4-3.8 2 0 3.6 1.6 3.6 4.3"/></svg>ค่ากลาง</button>
   <button data-v="wallet"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3zM3 7l3-3h12l3 3M16 13.5h2"/></svg>กระเป๋า</button>
 </nav>
 
@@ -1371,6 +1433,229 @@ document.addEventListener("click", e => { const b = e.target.closest("[data-page
   if (b.dataset.page === "pearl") renderPearl(); else renderFood(); go(b.dataset.page, true); });
 
 
+
+/* ================= ค่าใช้จ่ายกลาง (หารกันในกลุ่ม) ================= */
+const SX_SHEET = typeof SHARED_SHEET !== "undefined" ? SHARED_SHEET : {};
+const sx = Object.assign({ rows: [], pendAdd: [], pendDel: [], members: [], me: "", url: "", last: 0, err: "" }, store.get("shared", {}));
+if (!sx.url && SX_SHEET.webapp) sx.url = SX_SHEET.webapp;
+// ลิงก์ที่เพื่อนส่งมา: ...#shared?sheet=<url>&members=a,b
+(() => {
+  const q = new URLSearchParams((location.hash.split("?")[1]) || location.search.slice(1));
+  if (q.get("sheet") && /^https:\/\/script\.google(usercontent)?\.com\//.test(q.get("sheet"))) sx.url = q.get("sheet");
+  if (q.get("members")) q.get("members").split(",").map(s => s.trim()).filter(Boolean).forEach(n => { if (!sx.members.includes(n)) sx.members.push(n); });
+})();
+const sxSave = () => store.set("shared", sx);
+sxSave();
+let sxCat = "food", sxPayer = sx.me || "", sxSplit = null, sxBusy = false, sxScript = "";
+fetch("sheet-script.txt").then(r => r.ok ? r.text() : "").then(t => sxScript = t).catch(() => {});
+
+const sxAll = () => {
+  const del = new Set(sx.pendDel);
+  return [...sx.rows.filter(r => !del.has(r.id) && !sx.pendAdd.some(p => p.id === r.id)), ...sx.pendAdd].sort((a, b) => b.ts - a.ts);
+};
+const sxThb = r => r.cny * (r.rate || rate);
+function sxMembers() {
+  const set = new Set(sx.members);
+  sxAll().forEach(r => { set.add(r.payer); (r.split || []).forEach(n => set.add(n)); });
+  return [...set].filter(Boolean);
+}
+function sxBalances() {
+  const bal = {}; sxMembers().forEach(n => bal[n] = { paid: 0, owe: 0 });
+  sxAll().forEach(r => {
+    const t = sxThb(r), sp = (r.split && r.split.length) ? r.split : sxMembers();
+    bal[r.payer] = bal[r.payer] || { paid: 0, owe: 0 }; bal[r.payer].paid += t;
+    sp.forEach(n => { bal[n] = bal[n] || { paid: 0, owe: 0 }; bal[n].owe += t / sp.length; });
+  });
+  return bal;
+}
+// โอนให้น้อยครั้งที่สุด: คนที่ติดลบมากสุดจ่ายให้คนที่ได้คืนมากสุด
+function sxSettle(bal) {
+  const cr = [], db = [];
+  Object.entries(bal).forEach(([n, b]) => { const v = Math.round(b.paid - b.owe); if (v > 0) cr.push([n, v]); else if (v < 0) db.push([n, -v]); });
+  cr.sort((a, b) => b[1] - a[1]); db.sort((a, b) => b[1] - a[1]);
+  const out = []; let i = 0, j = 0;
+  while (i < db.length && j < cr.length) {
+    const x = Math.min(db[i][1], cr[j][1]);
+    if (x > 0) out.push([db[i][0], cr[j][0], x]);
+    db[i][1] -= x; cr[j][1] -= x;
+    if (db[i][1] <= 0) i++; if (cr[j][1] <= 0) j++;
+  }
+  return out;
+}
+
+function sxStatus() {
+  const el = $("#sxSync"), n = sx.pendAdd.length + sx.pendDel.length;
+  let cls = "", txt;
+  if (!sx.url) txt = "ยังไม่ได้เชื่อม Google Sheet · บันทึกไว้ในเครื่องนี้ก่อน";
+  else if (sxBusy) { cls = "wait"; txt = "กำลังส่งข้อมูลเข้า Google Sheet…"; }
+  else if (sx.err) { cls = n ? "err" : "wait"; txt = (n ? `รอส่ง ${n} รายการ · ` : "") + sx.err; }
+  else if (n) { cls = "wait"; txt = `รอส่ง ${n} รายการ`; }
+  else { cls = "ok"; txt = sx.last ? `ตรงกับ Google Sheet แล้ว · ${new Date(sx.last).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Shanghai" })}` : "เชื่อม Google Sheet แล้ว"; }
+  el.className = "syncbar " + cls; el.querySelector("span").textContent = txt;
+  $("#sxSyncBtn").hidden = !sx.url;
+}
+
+async function sxSync() {
+  if (!sx.url || sxBusy) { sxStatus(); return; }
+  sxBusy = true; sxStatus();
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 20000);
+  try {
+    const add = sx.pendAdd.slice(), del = sx.pendDel.slice();
+    const res = await fetch(sx.url, { method: "POST", body: JSON.stringify({ add, del, members: sx.members }), signal: ctl.signal, redirect: "follow" });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || "ชีตตอบกลับผิดพลาด");
+    sx.rows = j.rows || [];
+    sx.pendAdd = sx.pendAdd.filter(p => !add.some(a => a.id === p.id));
+    sx.pendDel = sx.pendDel.filter(d => !del.includes(d));
+    sx.last = Date.now(); sx.err = "";
+  } catch (e) {
+    sx.err = navigator.onLine ? "ต่อ Google ไม่ได้ (ในจีนต้องใช้เน็ตโรมมิ่ง/eSIM) จะลองใหม่อัตโนมัติ" : "ไม่มีเน็ต จะส่งให้เองเมื่อต่อเน็ตได้";
+  } finally { clearTimeout(t); sxBusy = false; sxSave(); renderShared(); }
+}
+addEventListener("online", () => sxSync());
+setInterval(() => { if (curView === "shared" && (sx.pendAdd.length || sx.pendDel.length || Date.now() - sx.last > 120000)) sxSync(); }, 60000);
+
+function renderShared() {
+  const mem = sxMembers();
+  if (sxSplit === null) sxSplit = mem.slice();
+  sxSplit = sxSplit.filter(n => mem.includes(n));
+  if (!mem.includes(sxPayer)) sxPayer = sx.me && mem.includes(sx.me) ? sx.me : (mem[0] || "");
+
+  const rows = sxAll(), tot = rows.reduce((a, r) => a + r.cny, 0), totT = rows.reduce((a, r) => a + sxThb(r), 0);
+  const mine = rows.filter(r => r.payer === sx.me), mC = mine.reduce((a, r) => a + r.cny, 0), mT = mine.reduce((a, r) => a + sxThb(r), 0);
+  $("#sxTot").textContent = "¥" + fmt(tot); $("#sxTotThb").textContent = "≈ ฿" + fmt(Math.round(totT));
+  $("#sxMeLbl").textContent = sx.me ? `${sx.me} จ่ายไป` : "คุณจ่ายไป";
+  $("#sxMine").textContent = "¥" + fmt(mC); $("#sxMineThb").textContent = "≈ ฿" + fmt(Math.round(mT));
+
+  // ตั้งค่าครั้งแรก: ยังไม่มีชื่อคนในทริป
+  $("#sxSetup").innerHTML = mem.length ? "" : `<div class="box" style="margin-top:12px">
+      <h3 style="margin:0 0 4px;font-family:var(--thai-display);font-weight:400;font-size:19px">ใครไปทริปนี้บ้าง</h3>
+      <p class="muted" style="margin:0 0 8px">ใส่ชื่อทีละคน (ชื่อเล่นก็ได้) แล้วเลือกว่าคุณคือใคร</p>
+      <div style="display:flex;gap:8px"><input id="sxNewName" placeholder="ชื่อ"><button class="btn red" id="sxAddName" type="button">เพิ่ม</button></div></div>`;
+  $("#sxForm").hidden = !mem.length;
+  $("#sxSetup").style.display = mem.length ? "none" : "";
+
+  $("#sxPayer").innerHTML = mem.map(n => `<button type="button" class="${n === sxPayer ? "on" : ""}" data-payer="${esc(n)}">${esc(n)}</button>`).join("");
+  $("#sxSplit").innerHTML = mem.map(n => `<button type="button" class="${sxSplit.includes(n) ? "on" : ""}" data-split="${esc(n)}">${esc(n)}</button>`).join("")
+    + `<button type="button" class="add" data-splitall="1">${sxSplit.length === mem.length ? "ล้าง" : "ทุกคน"}</button>`;
+  $("#sxCats").innerHTML = CATS.map(([k, n]) => `<button type="button" role="radio" aria-checked="${k === sxCat}" class="${k === sxCat ? "on" : ""}" data-sxc="${k}">${n}</button>`).join("");
+
+  // สรุปใครโอนให้ใคร
+  const bal = sxBalances(), st = sxSettle(bal);
+  $("#sxSettle").innerHTML = !rows.length ? `<p class="muted">ยังไม่มีรายการ บันทึกค่าใช้จ่ายกลางรายการแรกได้จากช่องด้านบน</p>` :
+    (st.length ? `<div class="settle">${st.map(([a, b, x]) => `<div class="pay"><b>${esc(a)}</b><div class="arrow">โอนให้<strong>฿${fmt(x)}</strong></div><span><b>${esc(b)}</b></span></div>`).join("")}</div>`
+      : `<p class="muted">ทุกคนจ่ายเท่ากันแล้ว ไม่ต้องโอน</p>`)
+    + `<div class="box" style="margin-top:10px"><div class="bal"><span class="h">ชื่อ</span><span class="h">จ่ายไป</span><span class="h">สุทธิ</span>
+      ${Object.entries(bal).map(([n, b]) => { const v = Math.round(b.paid - b.owe); return `<span>${esc(n)}</span><span>฿${fmt(Math.round(b.paid))}</span><span class="${v > 0 ? "pos" : v < 0 ? "neg" : ""}">${v > 0 ? "+" : ""}${fmt(v)}</span>`; }).join("")}
+      </div><p class="muted" style="margin:8px 0 0">บวก = ได้เงินคืน · ลบ = ต้องโอนเพิ่ม · คิดเป็นบาทตามเรตตอนบันทึก</p></div>`;
+
+  let last = "";
+  $("#sxList").innerHTML = rows.map(r => {
+    let h = ""; if (r.date !== last) { last = r.date; const q = dI(r.date); h = `<div class="daylbl">วัน${TH_DOW[q.w]} ${q.d} ${TH_MON[q.m]}</div>`; }
+    const pend = sx.pendAdd.some(p => p.id === r.id);
+    const sp = r.split && r.split.length ? r.split : [];
+    return `${h}<div class="exp sx"><div>${esc(r.note || catName[r.cat] || r.cat)}${pend ? `<span class="pend">รอส่ง</span>` : ""}
+      <div class="c">${esc(r.payer)} จ่าย · หาร ${sp.length || mem.length} คน${sp.length && sp.length < mem.length ? ` (${esc(sp.join(", "))})` : ""}<button class="del" data-sxdel="${esc(r.id)}">ลบ</button></div></div>
+      <div class="amt">¥${fmt(r.cny)}<small>฿${fmt(Math.round(sxThb(r)))}</small></div></div>`;
+  }).join("");
+
+  const sheetUrl = SX_SHEET.url || "";
+  $("#sxOpen").href = sheetUrl; $("#sxOpen").hidden = !sheetUrl;
+
+  // ตั้งค่า + วิธีเชื่อม Google Sheet
+  const share = `${location.origin}${location.pathname}#shared?${sx.url ? "sheet=" + encodeURIComponent(sx.url) + "&" : ""}members=${encodeURIComponent(mem.join(","))}`;
+  $("#sxSettings").innerHTML = `
+    <label class="l">คุณคือ (ใช้เป็นคนจ่ายเริ่มต้นในเครื่องนี้)</label>
+    <div class="who" id="sxMe">${mem.map(n => `<button type="button" class="${n === sx.me ? "on" : ""}" data-me="${esc(n)}">${esc(n)}</button>`).join("")}</div>
+    <label class="l" style="margin-top:12px">เพิ่มคนในทริป</label>
+    <div style="display:flex;gap:8px"><input id="sxNewName2" placeholder="ชื่อ"><button class="btn" id="sxAddName2" type="button">เพิ่ม</button></div>
+    <label class="l" style="margin-top:12px">ให้เพื่อนในทริปใช้ด้วย</label>
+    <p class="muted" style="margin:0 0 6px">ส่งลิงก์นี้ให้เพื่อน เปิดแล้วแอปจะเชื่อมชีตเดียวกันและมีรายชื่อคนครบ</p>
+    <div class="acts" style="margin-top:0"><button class="btn red" id="sxInvite" type="button" data-link="${esc(share)}">ส่งลิงก์ให้เพื่อน</button></div>
+    <hr style="border:0;border-top:1px dotted var(--rule);margin:14px 0">
+    <label class="l" for="sxUrl">ลิงก์รับข้อมูลของ Google Sheet (Web app URL)</label>
+    <div style="display:flex;gap:8px"><input id="sxUrl" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(sx.url)}"><button class="btn" id="sxUrlSave" type="button">บันทึก</button></div>
+    ${sx.url ? "" : `<details style="margin-top:10px" open><summary style="font-weight:600;cursor:pointer">วิธีเชื่อม Google Sheet (ทำครั้งเดียว ~5 นาที)</summary>
+      <ol class="steps">
+        <li>แตะ <b>คัดลอกโค้ด</b> <button class="btn" id="sxCopy" type="button">คัดลอกโค้ด</button></li>
+        <li>แตะ <a href="${esc(sheetUrl)}" target="_blank" rel="noopener" style="color:var(--lacquer)">เปิด Google Sheet</a> ใน Safari แล้วกด <b>aA → ขอเว็บไซต์เดสก์ท็อป</b> (Chrome: ⋮ → เว็บไซต์เดสก์ท็อป)</li>
+        <li>เมนู <b>ส่วนขยาย → Apps Script</b> ลบโค้ดเดิมทั้งหมด แล้ววางโค้ดที่คัดลอก กดไอคอนบันทึก</li>
+        <li><b>การทำให้ใช้งานได้ → การทำให้ใช้งานได้รายการใหม่</b> → รูปเฟือง เลือก <b>เว็บแอป</b></li>
+        <li>เรียกใช้ในฐานะ <b>ฉัน</b> · ผู้ที่มีสิทธิ์เข้าถึง <b>ทุกคน</b> → กด <b>ทำให้ใช้งานได้</b></li>
+        <li>กด <b>ให้สิทธิ์เข้าถึง</b> เลือกบัญชี → <b>ขั้นสูง → ไปที่…(ไม่ปลอดภัย)</b> → <b>อนุญาต</b> (สคริปต์ของคุณเอง แก้ได้แค่ชีตนี้)</li>
+        <li>คัดลอก <b>URL ของเว็บแอป</b> กลับมาวางในช่องด้านบน แล้วกดบันทึก</li>
+      </ol></details>`}`;
+  sxStatus();
+}
+
+function sxAddMember(inp) {
+  const n = inp.value.trim().replace(/[,|]/g, " "); if (!n) return;
+  if (!sx.members.includes(n)) sx.members.push(n);
+  if (!sx.me) sx.me = n;
+  if (sxSplit && !sxSplit.includes(n)) sxSplit.push(n);
+  inp.value = ""; sxSave(); renderShared(); toast(`เพิ่ม ${n} แล้ว`);
+}
+$("#v-shared").addEventListener("click", async e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.payer) { sxPayer = t.dataset.payer; renderShared(); }
+  else if (t.dataset.split) { const n = t.dataset.split; sxSplit = sxSplit.includes(n) ? sxSplit.filter(x => x !== n) : [...sxSplit, n]; renderShared(); }
+  else if (t.dataset.splitall) { sxSplit = sxSplit.length === sxMembers().length ? [] : sxMembers(); renderShared(); }
+  else if (t.dataset.sxc) { sxCat = t.dataset.sxc; renderShared(); }
+  else if (t.dataset.me) { sx.me = t.dataset.me; sxPayer = sx.me; sxSave(); renderShared(); }
+  else if (t.id === "sxAddName") sxAddMember($("#sxNewName"));
+  else if (t.id === "sxAddName2") sxAddMember($("#sxNewName2"));
+  else if (t.dataset.sxdel) {
+    const id = t.dataset.sxdel; if (!confirm("ลบรายการนี้ของทั้งกลุ่ม?")) return;
+    if (sx.pendAdd.some(p => p.id === id)) sx.pendAdd = sx.pendAdd.filter(p => p.id !== id);
+    else { sx.pendDel.push(id); }
+    sxSave(); renderShared(); sxSync();
+  }
+  else if (t.id === "sxSyncBtn") sxSync();
+  else if (t.id === "sxUrlSave") {
+    const u = $("#sxUrl").value.trim();
+    if (u && !/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec/.test(u)) { toast("ลิงก์ต้องขึ้นต้น script.google.com/macros/s/ และลงท้าย /exec"); return; }
+    sx.url = u; sx.err = ""; sxSave(); renderShared(); sxSync(); toast(u ? "เชื่อม Google Sheet แล้ว" : "ยกเลิกการเชื่อมแล้ว");
+  }
+  else if (t.id === "sxCopy") {
+    if (!sxScript) { toast("ยังโหลดโค้ดไม่เสร็จ ลองอีกครั้ง"); return; }
+    try { await navigator.clipboard.writeText(sxScript); toast("คัดลอกโค้ดแล้ว"); }
+    catch { const ta = document.createElement("textarea"); ta.value = sxScript; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); toast("คัดลอกโค้ดแล้ว"); }
+  }
+  else if (t.id === "sxInvite") {
+    const url = t.dataset.link, text = "แอปทริปเซี่ยงไฮ้ — บันทึกค่าใช้จ่ายกลางร่วมกัน";
+    if (navigator.share) { try { await navigator.share({ title: "Shanghai 上海", text, url }); } catch {} }
+    else { try { await navigator.clipboard.writeText(url); toast("คัดลอกลิงก์แล้ว"); } catch { prompt("คัดลอกลิงก์นี้", url); } }
+  }
+  else if (t.id === "sxShare") {
+    const bal = sxBalances(), st = sxSettle(bal), rows = sxAll();
+    const tot = rows.reduce((a, r) => a + sxThb(r), 0);
+    const text = `ค่าใช้จ่ายกลาง ทริปเซี่ยงไฮ้ 7–15 พ.ย.\nรวม ฿${fmt(Math.round(tot))} (${rows.length} รายการ)\n\n`
+      + Object.entries(bal).map(([n, b]) => `${n}: จ่ายไป ฿${fmt(Math.round(b.paid))} · ส่วนของตัวเอง ฿${fmt(Math.round(b.owe))}`).join("\n")
+      + `\n\nโอนกัน:\n` + (st.length ? st.map(([a, b, x]) => `• ${a} → ${b} ฿${fmt(x)}`).join("\n") : "ไม่ต้องโอน")
+      + (SX_SHEET.url ? `\n\nดูทุกรายการ: ${SX_SHEET.url}` : "");
+    if (navigator.share) { try { await navigator.share({ text }); } catch {} }
+    else { try { await navigator.clipboard.writeText(text); toast("คัดลอกสรุปแล้ว วางใน LINE ได้เลย"); } catch { prompt("คัดลอกสรุป", text); } }
+  }
+  else if (t.id === "sxCsv") {
+    const rowsC = [["date","payer","note","category","cny","rate","thb","split"], ...sxAll().map(r => [r.date, r.payer, r.note, catName[r.cat] || r.cat, r.cny, r.rate, Math.round(sxThb(r)), (r.split || []).join(" / ")])];
+    download("shanghai-shared-expenses.csv", "﻿" + rowsC.map(r => r.map(c => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\n"), "text/csv");
+  }
+});
+$("#v-shared").addEventListener("keydown", e => { if (e.key === "Enter" && (e.target.id === "sxNewName" || e.target.id === "sxNewName2")) { e.preventDefault(); sxAddMember(e.target); } });
+$("#sxForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const cny = parseFloat(String($("#sxAmt").value).replace(",", "."));
+  if (!(cny > 0)) { toast("ใส่จำนวนเงินก่อน"); $("#sxAmt").focus(); return; }
+  if (!sxPayer) { toast("เลือกว่าใครจ่าย"); return; }
+  if (!sxSplit.length) { toast("เลือกว่าหารกับใคร"); return; }
+  const r = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ts: Date.now(), date: SH().date,
+    payer: sxPayer, note: $("#sxNote").value.trim(), cat: sxCat, cny, rate, split: sxSplit.slice() };
+  sx.pendAdd.push(r); sxSave();
+  $("#sxAmt").value = ""; $("#sxNote").value = "";
+  sxPayer = sx.me || sxPayer; sxSplit = sxMembers();  // รายการถัดไปเริ่มที่ "ฉันจ่าย หารทุกคน"
+  renderShared(); toast(sx.url ? "บันทึกแล้ว กำลังส่งเข้า Google Sheet" : "บันทึกแล้ว"); sxSync();
+});
+
 /* ================= ปุ่มร่วม + แท็บ ================= */
 document.addEventListener("click", e => {
   const s = e.target.closest("[data-show]"); if (s) { showPlace(s.dataset.show); return; }
@@ -1389,6 +1674,7 @@ function go(v, push) {
   const tab = v in SUB ? (stack.find(x => !(x in SUB)) || "home") : v;
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === tab));
   if (v === "home") renderHome();
+  if (v === "shared") { renderShared(); sxSync(); }
   if (v === "map") { if (!mapReady) { buildMap(); renderMapFilter(); drawMapContent(); requestAnimationFrame(fitAll); } else requestAnimationFrame(place); }
   window.scrollTo(0, 0);
   try { history.replaceState(null, "", "#" + v); } catch {}
@@ -1407,7 +1693,7 @@ renderPlan(); renderPlaces(); renderCats(); renderMoney(); renderChecks(); rende
 const h = location.hash.slice(1);
 if (h === "pearl") { renderPearl(); go("pearl", true); }
 else if (h === "food") { renderFood(); go("food", true); }
-else if (["home","plan","map","places","phrases","wallet"].includes(h)) go(h);
+else if (["home","plan","map","places","phrases","shared","wallet"].includes(h.split("?")[0])) go(h.split("?")[0]);
 if ("speechSynthesis" in window) speechSynthesis.getVoices();
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   // มีเวอร์ชันใหม่ขึ้น GitHub → โหลดหน้าใหม่ให้อัตโนมัติครั้งเดียว ไม่ต้องกดรีเฟรชเอง

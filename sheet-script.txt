@@ -1,0 +1,64 @@
+// ค่าใช้จ่ายกลาง ทริปเซี่ยงไฮ้ — รับข้อมูลจากแอป แล้วเขียนลง Google Sheet
+const SHEET_ID = "1CmQtGoi5vmf4PwHZHK_JOtJwLshdbmeipg5N1K6OzwU";
+const COLS = ["id", "บันทึกเมื่อ", "วันที่", "ผู้จ่าย", "รายการ", "หมวด", "หยวน", "เรต", "บาท", "หารกับ", "จำนวนคน", "คนละ (บาท)"];
+
+function sheet_(name) { return SpreadsheetApp.openById(SHEET_ID).getSheetByName(name); }
+function out_(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
+
+function readAll_() {
+  const sh = sheet_("รายการ"), n = sh.getLastRow();
+  if (n < 2) return [];
+  return sh.getRange(2, 1, n - 1, COLS.length).getValues().filter(r => r[0]).map(r => ({
+    id: String(r[0]), ts: r[1] instanceof Date ? r[1].getTime() : Number(r[1]) || 0,
+    date: r[2] instanceof Date ? Utilities.formatDate(r[2], "Asia/Shanghai", "yyyy-MM-dd") : String(r[2]),
+    payer: String(r[3]), note: String(r[4]), cat: String(r[5]), cny: Number(r[6]) || 0, rate: Number(r[7]) || 0,
+    split: String(r[9]).split(",").map(s => s.trim()).filter(Boolean)
+  }));
+}
+
+// แอปอ่านรายการทั้งหมด (ของทุกคน)
+function doGet() {
+  return out_({ ok: true, rows: readAll_() });
+}
+
+// แอปส่งรายการใหม่ / ลบรายการ: { add: [...], del: ["id", ...] }
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const body = JSON.parse(e.postData.contents || "{}");
+    const sh = sheet_("รายการ");
+    const ids = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().map(r => String(r[0])) : [];
+    const added = [];
+    (body.add || []).forEach(x => {
+      if (!x.id || ids.indexOf(String(x.id)) >= 0) { added.push(x.id); return; }
+      const split = (x.split || []).filter(Boolean);
+      const thb = Math.round(Number(x.cny) * Number(x.rate) * 100) / 100;
+      sh.appendRow([String(x.id), new Date(Number(x.ts) || Date.now()), x.date, x.payer, x.note || "", x.cat || "",
+        Number(x.cny), Number(x.rate), thb, split.join(", "), split.length, split.length ? Math.round(thb / split.length * 100) / 100 : 0]);
+      ids.push(String(x.id)); added.push(x.id);
+    });
+    (body.del || []).forEach(id => {
+      const i = ids.indexOf(String(id));
+      if (i >= 0) { sh.deleteRow(i + 2); ids.splice(i, 1); }
+    });
+    addMembers_(body.members || []);
+    return out_({ ok: true, added: added, rows: readAll_() });
+  } catch (err) {
+    return out_({ ok: false, error: String(err) });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// เพิ่มชื่อคนใหม่ลงแท็บ สรุป (คอลัมน์ A แถว 2–11)
+function addMembers_(names) {
+  const s = sheet_("สรุป"), have = s.getRange(2, 1, 10, 1).getValues().map(r => String(r[0]).trim());
+  names.forEach(n => {
+    n = String(n).trim();
+    if (!n || have.indexOf(n) >= 0) return;
+    const i = have.indexOf("");
+    if (i < 0) return;
+    s.getRange(i + 2, 1).setValue(n); have[i] = n;
+  });
+}
